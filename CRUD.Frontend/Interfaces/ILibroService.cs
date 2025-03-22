@@ -7,8 +7,8 @@ namespace CRUD.Frontend.Interfaces
     {
         Task<IEnumerable<Libro>> ObtenerTodosAsync();
         Task<Libro> ObtenerLibroPorIdAsync(int id);
-        Task CrearLibroAsync(LibroCrearDto libroDto);
-        Task ModificarLibroAsync(int id, LibroCrearDto libroDto);
-        Task EliminarLibroAsync(int id);
+        Task<string> CrearLibroAsync(LibroCrearDto libroDto);
+        Task<string> ModificarLibroAsync(int id, LibroCrearDto libroDto);
+        Task<string> EliminarLibroAsync(int id);
     }
 }

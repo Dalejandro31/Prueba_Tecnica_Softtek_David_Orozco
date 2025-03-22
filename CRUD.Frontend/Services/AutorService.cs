@@ -25,12 +25,22 @@ namespace CRUD.Frontend.Services
             return await _httpClient.GetFromJsonAsync<Autor>($"api/Autor/{id}");
         }
 
-        public async Task CrearAutorAsync(Autor autor)
+        public async Task<string> CrearAutorAsync(Autor autor)
         {
-            await _httpClient.PostAsJsonAsync("api/autor", autor);
+            var response = await _httpClient.PostAsJsonAsync("api/autor", autor);
+            if (!response.IsSuccessStatusCode)
+            {
+                var contenidoError = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Error al crear Autor: {contenidoError}");
+            }
+
+            var contenidoExito = await response.Content.ReadAsStringAsync();
+            
+
+            return contenidoExito;
         }
 
-        public async Task ModificarAutorAsync(int id, Autor autor)
+        public async Task<string> ModificarAutorAsync(int id, Autor autor)
         {
             var response = await _httpClient.PutAsJsonAsync($"api/Autor/{id}", autor);
             if (!response.IsSuccessStatusCode)
@@ -38,9 +48,14 @@ namespace CRUD.Frontend.Services
                 var contenidoError = await response.Content.ReadAsStringAsync();
                 throw new Exception($"Error al modificar Autor: {contenidoError}");
             }
+
+            var contenidoExito = await response.Content.ReadAsStringAsync();
+            
+
+            return contenidoExito;
         }
 
-        public async Task EliminarAutorAsync(int id)
+        public async Task<string> EliminarAutorAsync(int id)
         {
             var response = await _httpClient.DeleteAsync($"api/Autor/{id}");
             if (!response.IsSuccessStatusCode)
@@ -48,6 +63,11 @@ namespace CRUD.Frontend.Services
                 var contenidoError = await response.Content.ReadAsStringAsync();
                 throw new Exception($"Error al eliminar Autor: {contenidoError}");
             }
+
+            var contenidoExito = await response.Content.ReadAsStringAsync();
+
+
+            return contenidoExito;
         }
     }
 }

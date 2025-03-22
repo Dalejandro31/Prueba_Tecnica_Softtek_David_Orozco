@@ -3,6 +3,7 @@ using CRUD.Shared;
 
 namespace CRUD.Backend.Interfaces
 {
+    // Interfaz que define las operaciones disponibles para los libros
     public interface ILibroService
     {
         Task<IEnumerable<Libro>> ObtenerTodosAsync();

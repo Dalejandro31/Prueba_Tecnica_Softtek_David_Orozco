@@ -6,28 +6,38 @@
 
 <EditForm Model="@nuevoAutor" OnValidSubmit="@CrearAutor" class="row g-3">
     <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <div class="col-md-6">
-        <label for="nombreCompleto" class="form-label">Nombre Completo:</label>
-        <InputText @bind-Value="nuevoAutor.NombreCompleto" id="nombreCompleto" class="form-control" />
-    </div>
-
-    <div class="col-md-6">
-        <label class="form-label">Fecha de Nacimiento:</label>
-        <InputDate @bind-Value="nuevoAutor.FechaNacimiento" class="form-control" />
-    </div>
-
     
 
     <div class="col-md-6">
-        <label for="ciudadProcedencia" class="form-label">Ciudad de Procedencia:</label>
-        <InputText @bind-Value="nuevoAutor.CiudadProcedencia" id="ciudadProcedencia" class="form-control" />
+        <label for="nombreCompleto" class="form-label">
+            Nombre Completo <span class="text-danger">*</span>
+        </label>
+        <InputText @bind-Value="nuevoAutor.NombreCompleto" id="nombreCompleto" class="form-control" />
+        <ValidationMessage For="@(() => nuevoAutor.NombreCompleto)" />
     </div>
 
     <div class="col-md-6">
-        <label for="correoElectronico" class="form-label">Correo Electrónico:</label>
+        <label class="form-label">
+            Fecha de Nacimiento <span class="text-danger">*</span>
+        </label>
+        <InputDate @bind-Value="nuevoAutor.FechaNacimiento" class="form-control" />
+        <ValidationMessage For="@(() => nuevoAutor.FechaNacimiento)" />
+    </div>
+
+    <div class="col-md-6">
+        <label for="ciudadProcedencia" class="form-label">
+            Ciudad de Procedencia <span class="text-danger">*</span>
+        </label>
+        <InputText @bind-Value="nuevoAutor.CiudadProcedencia" id="ciudadProcedencia" class="form-control" />
+        <ValidationMessage For="@(() => nuevoAutor.CiudadProcedencia)" />
+    </div>
+
+    <div class="col-md-6">
+        <label for="correoElectronico" class="form-label">
+            Correo Electrónico <span class="text-danger">*</span>
+        </label>
         <InputText @bind-Value="nuevoAutor.CorreoElectronico" id="correoElectronico" class="form-control" />
+        <ValidationMessage For="@(() => nuevoAutor.CorreoElectronico)" />
     </div>
 
     <div class="col-12">
@@ -36,13 +46,38 @@
     </div>
 </EditForm>
 
+
+
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger mt-3">@mensajeError</div>
+}
+@if (!string.IsNullOrEmpty(mensajeExito))
+{
+    <div class="alert alert-success mt-3">@mensajeExito</div>
+}
 @code {
     private Autor nuevoAutor = new Autor();
+    private string mensajeError;
+    private string mensajeExito;
+
 
     private async Task CrearAutor()
     {
-        await AutorService.CrearAutorAsync(nuevoAutor);
-        NavigationManager.NavigateTo("/autores");
+        try
+        {
+            mensajeError = "";
+            mensajeExito = "";
+            await AutorService.CrearAutorAsync(nuevoAutor);
+            mensajeExito = "Autor Creado correctamente";
+            StateHasChanged();
+            await Task.Delay(3000);
+            NavigationManager.NavigateTo("/autores");
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
     }
 
     private void Regresar()

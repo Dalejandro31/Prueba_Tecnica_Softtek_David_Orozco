@@ -30,14 +30,20 @@ else
     </div>
 }
 
+
 @if (!string.IsNullOrEmpty(mensajeError))
 {
     <div class="alert alert-danger mt-3">@mensajeError</div>
 }
-
+@if (!string.IsNullOrEmpty(mensajeExito))
+{
+    <div class="alert alert-success mt-3">@mensajeExito</div>
+}
 @code {
     private IEnumerable<Libro>? libros;
     private string mensajeError;
+    private string mensajeExito;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -62,9 +68,14 @@ else
         try
         {
             mensajeError = "";
+            mensajeExito = "";
             await LibroService.EliminarLibroAsync(libroId);
-            // Recargar la lista tras la eliminación
+            mensajeExito = "Libro Eliminado correctamente";
+            StateHasChanged();
+            await Task.Delay(3000);
             await CargarLibros();
+			mensajeExito = "";
+
         }
         catch (Exception ex)
         {

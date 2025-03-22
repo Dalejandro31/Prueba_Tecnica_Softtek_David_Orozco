@@ -2,6 +2,7 @@
 
 namespace CRUD.Backend.DTOs
 {
+    // DTO para Libro
     public class LibroDTO
     {
         [Required(ErrorMessage = "El título es obligatorio")]

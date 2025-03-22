@@ -7,31 +7,46 @@
 
 <EditForm Model="@nuevoLibro" OnValidSubmit="@CrearLibro" class="row g-3">
     <DataAnnotationsValidator />
-    <ValidationSummary />
+ 
 
     <div class="col-md-6">
-        <label class="form-label">Título <span class="text-danger">*</span></label>
+        <label class="form-label">
+            Título <span class="text-danger">*</span>
+        </label>
         <InputText @bind-Value="nuevoLibro.Titulo" class="form-control" />
+        <ValidationMessage For="@(() => nuevoLibro.Titulo)" />
     </div>
 
     <div class="col-md-6">
-        <label class="form-label">Año de Publicación <span class="text-danger">*</span></label>
+        <label class="form-label">
+            Año de Publicación <span class="text-danger">*</span>
+        </label>
         <InputDate @bind-Value="nuevoLibro.AnioDeAnioPublicacion" class="form-control" />
+        <ValidationMessage For="@(() => nuevoLibro.AnioDeAnioPublicacion)" />
     </div>
 
     <div class="col-md-6">
-        <label class="form-label">Género <span class="text-danger">*</span></label>
+        <label class="form-label">
+            Género <span class="text-danger">*</span>
+        </label>
         <InputText @bind-Value="nuevoLibro.Genero" class="form-control" />
+        <ValidationMessage For="@(() => nuevoLibro.Genero)" />
     </div>
 
     <div class="col-md-6">
-        <label class="form-label">Número de Páginas <span class="text-danger">*</span></label>
+        <label class="form-label">
+            Número de Páginas <span class="text-danger">*</span>
+        </label>
         <InputNumber @bind-Value="nuevoLibro.NumeroPaginas" class="form-control" />
+        <ValidationMessage For="@(() => nuevoLibro.NumeroPaginas)" />
     </div>
 
     <div class="col-12">
-        <label class="form-label">Nombre del Autor <span class="text-danger">*</span></label>
+        <label class="form-label">
+            Nombre del Autor <span class="text-danger">*</span>
+        </label>
         <InputText @bind-Value="nuevoLibro.NombreAutor" class="form-control" />
+        <ValidationMessage For="@(() => nuevoLibro.NombreAutor)" />
     </div>
 
     <div class="col-12">
@@ -44,18 +59,27 @@
 {
     <div class="alert alert-danger mt-3">@mensajeError</div>
 }
+@if (!string.IsNullOrEmpty(mensajeExito))
+{
+    <div class="alert alert-success mt-3">@mensajeExito</div>
+}
 
 @code {
-
     private LibroCrearDto nuevoLibro = new LibroCrearDto();
     private string mensajeError;
+    private string mensajeExito;
 
     private async Task CrearLibro()
     {
         try
         {
             mensajeError = "";
+            mensajeExito = "";
+
             await LibroService.CrearLibroAsync(nuevoLibro);
+            mensajeExito = "Libro Creado correctamente";
+            StateHasChanged();
+            await Task.Delay(3000);
             NavigationManager.NavigateTo("/libros");
         }
         catch (Exception ex)

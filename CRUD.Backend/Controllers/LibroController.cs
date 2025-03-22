@@ -14,12 +14,15 @@ namespace CRUD.Backend.Controllers
         private readonly ILibroService _libroService;
         private readonly IAutorService _autorService;
 
+        // Inyección de dependencias para los servicios de libro y autor
         public LibroController(ILibroService libroService, IAutorService autorService)
         {
             _libroService = libroService;
             _autorService = autorService;
         }
 
+
+        // Obtener todos los libros registrados
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Libro>>> GetLibros()
         {
@@ -27,6 +30,7 @@ namespace CRUD.Backend.Controllers
             return Ok(libros);
         }
 
+        // Obtener un libro específico por su ID
         [HttpGet("{id}")]
         public async Task<ActionResult<Libro>> GetLibroId(int id)
         {
@@ -38,16 +42,7 @@ namespace CRUD.Backend.Controllers
             return Ok(libro);
         }
 
-        [HttpGet("autores")]
-        public async Task<IActionResult> GetAutores()
-        {
-            var autores = await _autorService.ObtenerTodosAsync();
-            return Ok(autores);
-        }
-
-        
-
-
+        // Crear un nuevo libro
         [HttpPost]
         public async Task<ActionResult> CreateLibro([FromBody] LibroDTO libroDto)
         {
@@ -59,7 +54,7 @@ namespace CRUD.Backend.Controllers
             try
             {
                 await _libroService.CrearLibroAsync(libroDto);
-                return StatusCode(201);
+                return Ok(new { message = "Libro creado correctamente" });
             }
             catch (ExcpecionAutor ex)
             {
@@ -71,6 +66,7 @@ namespace CRUD.Backend.Controllers
             }
         }
 
+        // Modificar un libro
         [HttpPut("{id}")]
         public async Task<ActionResult> ModificarLibro(int id, [FromBody] LibroDTO libroDto)
         {
@@ -81,7 +77,8 @@ namespace CRUD.Backend.Controllers
             try
             {
                 await _libroService.ModificarLibroAsync(id, libroDto);
-                return Ok();
+                return Ok(new { message = "Libro modificado correctamente" });
+
             }
             catch (ExcepcionLibro ex)
             {
@@ -89,13 +86,14 @@ namespace CRUD.Backend.Controllers
             }
         }
 
+        // Eliminar un libro
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteLibro(int id)
         {
             try
             {
                 await _libroService.EliminarLibroAsync(id);
-                return Ok();
+                return Ok(new { message = "Libro eliminado correctamente" });
             }
             catch (ExcepcionLibro ex)
             {

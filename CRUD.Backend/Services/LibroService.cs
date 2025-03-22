@@ -20,11 +20,13 @@ namespace CRUD.Backend.Services
             _autorService = autorService;
         }
 
+        // Obtener todos los libros con su autor
         public async Task<IEnumerable<Libro>> ObtenerTodosAsync()
         {
             return await _context.Libros.Include(l => l.Autor).ToListAsync();
         }
 
+        // Crear un nuevo libro
         public async Task<Libro> CrearLibroAsync(LibroDTO libroDto)
         {
             var autor = await _autorService.ObtenerPorNombreAsync(libroDto.NombreAutor);
@@ -56,6 +58,7 @@ namespace CRUD.Backend.Services
             return libro;
         }
 
+        // Modificar un libro
         public async Task<Libro> ModificarLibroAsync(int id, LibroDTO libroDto)
         {
             var libro = await _context.Libros.FirstOrDefaultAsync(l => l.LibroId == id);
@@ -64,7 +67,6 @@ namespace CRUD.Backend.Services
                 throw new ExcepcionLibro();
             }
 
-            // Si se envía un AutorId, se utiliza para obtener el autor; de lo contrario se busca por NombreAutor.
             CRUD.Shared.Autor autor;
             if (libroDto.AutorId.HasValue)
             {
@@ -89,7 +91,7 @@ namespace CRUD.Backend.Services
             await _context.SaveChangesAsync();
             return libro;
         }
-
+        // Eliminar libro
         public async Task<Libro> EliminarLibroAsync(int id)
         {
             var libro = await _context.Libros.FirstOrDefaultAsync(l => l.LibroId == id);
@@ -101,7 +103,7 @@ namespace CRUD.Backend.Services
             await _context.SaveChangesAsync();
             return libro;
         }
-
+        // Obtener libro por ID
         public async Task<Libro> ObtenerPorIdAsync(int id)
         {
             return await _context.Libros.Include(l => l.Autor).FirstOrDefaultAsync(l => l.LibroId == id);

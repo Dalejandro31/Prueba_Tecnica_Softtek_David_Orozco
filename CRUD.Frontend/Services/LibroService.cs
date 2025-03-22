@@ -24,7 +24,7 @@ namespace CRUD.Frontend.Services
             return await _httpClient.GetFromJsonAsync<Libro>($"api/libro/{id}");
         }
 
-        public async Task CrearLibroAsync(LibroCrearDto libroDto)
+        public async Task<string> CrearLibroAsync(LibroCrearDto libroDto)
         {
             var response = await _httpClient.PostAsJsonAsync("api/Libro", libroDto);
 
@@ -33,9 +33,14 @@ namespace CRUD.Frontend.Services
                 var contenidoError = await response.Content.ReadAsStringAsync();
                 throw new Exception($"Error al crear libro: {contenidoError}");
             }
+
+            var contenidoExito = await response.Content.ReadAsStringAsync();
+
+
+            return contenidoExito;
         }
 
-        public async Task ModificarLibroAsync(int id, LibroCrearDto libroDto)
+        public async Task<string> ModificarLibroAsync(int id, LibroCrearDto libroDto)
         {
             var response = await _httpClient.PutAsJsonAsync($"api/libro/{id}", libroDto);
             if (!response.IsSuccessStatusCode)
@@ -43,9 +48,14 @@ namespace CRUD.Frontend.Services
                 var contenidoError = await response.Content.ReadAsStringAsync();
                 throw new Exception($"Error al modificar libro: {contenidoError}");
             }
+
+            var contenidoExito = await response.Content.ReadAsStringAsync();
+
+
+            return contenidoExito;
         }
 
-        public async Task EliminarLibroAsync(int id)
+        public async Task<string> EliminarLibroAsync(int id)
         {
             var response = await _httpClient.DeleteAsync($"api/libro/{id}");
             if (!response.IsSuccessStatusCode)
@@ -53,6 +63,11 @@ namespace CRUD.Frontend.Services
                 var contenidoError = await response.Content.ReadAsStringAsync();
                 throw new Exception($"Error al eliminar libro: {contenidoError}");
             }
+
+            var contenidoExito = await response.Content.ReadAsStringAsync();
+
+
+            return contenidoExito;
         }
 
 

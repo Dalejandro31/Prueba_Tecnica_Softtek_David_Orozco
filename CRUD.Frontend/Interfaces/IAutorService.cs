@@ -6,9 +6,10 @@ namespace CRUD.Frontend.Interfaces
     {
         Task<IEnumerable<Autor>> ObtenerTodosAsync();
         Task<Autor> ObtenerAutorPorIdAsync(int id);
-        Task CrearAutorAsync(Autor autor);
-        Task ModificarAutorAsync(int id, Autor autor);
-        Task EliminarAutorAsync(int id);
+        Task<string> CrearAutorAsync(Autor autor);
+        Task<string> ModificarAutorAsync(int id, Autor autor);
+
+        Task<string> EliminarAutorAsync(int id);
 
     }
 }

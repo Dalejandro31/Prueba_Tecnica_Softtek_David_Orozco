@@ -52,29 +52,30 @@ else
 {
     <div class="alert alert-danger mt-3">@mensajeError</div>
 }
-
+@if (!string.IsNullOrEmpty(mensajeExito))
+{
+    <div class="alert alert-success mt-3">@mensajeExito</div>
+}
 @code {
     [Parameter]
     public int LibroId { get; set; }
 
-    // Utilizaremos el mismo DTO que en la creación.
     private LibroCrearDto libro = new LibroCrearDto();
     private string mensajeError;
+    private string mensajeExito;
+
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            // Se obtiene el libro a través del endpoint GET por ID
             var libroObtenido = await LibroService.ObtenerLibroPorIdAsync(LibroId);
-            // Mapear las propiedades al DTO (puedes crear un DTO específico para edición si lo prefieres)
             libro = new LibroCrearDto
                 {
                     Titulo = libroObtenido.Titulo,
                     AnioDeAnioPublicacion = libroObtenido.AnioDeAnioPublicacion,
                     Genero = libroObtenido.Genero,
                     NumeroPaginas = libroObtenido.NumeroPaginas,
-                    // Se asume que el nombre del autor viene de la propiedad Autor
                     NombreAutor = libroObtenido.Autor?.NombreCompleto
                 };
         }
@@ -89,7 +90,12 @@ else
         try
         {
             mensajeError = "";
+            mensajeExito = "";
+
             await LibroService.ModificarLibroAsync(LibroId, libro);
+            mensajeExito = "Libro editado correctamente";
+            StateHasChanged();
+            await Task.Delay(3000);
             NavigationManager.NavigateTo("/libros");
         }
         catch (Exception ex)

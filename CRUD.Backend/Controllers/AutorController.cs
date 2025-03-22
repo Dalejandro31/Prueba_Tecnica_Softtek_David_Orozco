@@ -12,11 +12,13 @@ namespace CRUD.Backend.Controllers
     {
         private readonly IAutorService _autorService;
 
+        // Inyección de dependencias para acceder al servicio de autores
         public AutorController(IAutorService autorService)
         {
             _autorService = autorService;
         }
 
+        // Obtener todos los autores registrados
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Autor>>> GetAutores()
         {
@@ -24,6 +26,7 @@ namespace CRUD.Backend.Controllers
             return Ok(autores);
         }
 
+        // Obtener un autor específico por su ID
         [HttpGet("{id}")]
         public async Task<ActionResult<Autor>> GetAutorId(int id)
         {
@@ -35,6 +38,7 @@ namespace CRUD.Backend.Controllers
             return Ok(autor);
         }
 
+        // Crear un nuevo autor
         [HttpPost]
         public async Task<ActionResult> CreateAutor([FromBody] AutorDTO autorDto)
         {
@@ -44,9 +48,10 @@ namespace CRUD.Backend.Controllers
             }
 
             await _autorService.CrearAutorAsync(autorDto);
-            return StatusCode(201); 
+            return Ok(new { message = "Autor Creado correctamente" });
         }
 
+        // Modificar un autor 
         [HttpPut("{id}")]
         public async Task<ActionResult> ModificarAutor(int id, [FromBody] AutorDTO autorDto)
         {
@@ -57,7 +62,7 @@ namespace CRUD.Backend.Controllers
             try
             {
                 await _autorService.ModificarAutorAsync(id, autorDto);
-                return Ok();
+                return Ok(new { message = "Autor modificado correctamente" });
             }
             catch (Exception ex)
             {
@@ -65,13 +70,14 @@ namespace CRUD.Backend.Controllers
             }
         }
 
+        // Eliminar un autor
         [HttpDelete("{id}")]
         public async Task<ActionResult> EliminarAutor(int id)
         {
             try
             {
                 await _autorService.EliminarAutorAsync(id);
-                return Ok();
+                return Ok(new { message = "Autor Eliminado Correctamente" });
             }
             catch (Exception ex)
             {

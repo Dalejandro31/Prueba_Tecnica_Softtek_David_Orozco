@@ -18,9 +18,11 @@ else
                     <div class="card-body">
                         <h5 class="card-title">@autor.NombreCompleto</h5>
                         <p class="card-text">@autor.CorreoElectronico</p>
+
                         <button class="btn btn-link p-0" @onclick="() => ToggleMostrarLibros(autor.AutorId)">
                             @(autoresConLibrosVisibles.Contains(autor.AutorId) ? "Ocultar Libros" : "Mostrar Libros")
                         </button>
+
                         <button class="btn btn-warning me-2" @onclick='() => NavigationManager.NavigateTo($"/autores/editar/{autor.AutorId}")'>Editar</button>
                         <button class="btn btn-danger" @onclick="() => EliminarAutor(autor.AutorId)">Eliminar</button>
 
@@ -49,15 +51,22 @@ else
     </div>
 }
 
+
+
 @if (!string.IsNullOrEmpty(mensajeError))
 {
     <div class="alert alert-danger mt-3">@mensajeError</div>
 }
-
+@if (!string.IsNullOrEmpty(mensajeExito))
+{
+    <div class="alert alert-success mt-3">@mensajeExito</div>
+}
 @code {
     private IEnumerable<Autor>? autores;
     private HashSet<int> autoresConLibrosVisibles = new HashSet<int>();
     private string mensajeError;
+    private string mensajeExito;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -94,9 +103,13 @@ else
         try
         {
             mensajeError = "";
+			mensajeExito = "";
             await AutorService.EliminarAutorAsync(autorId);
-            // Recargar la lista tras la eliminación
+            mensajeExito = "Autor Eliminado correctamente";
+            StateHasChanged();
+            await Task.Delay(3000);
             await CargarAutores();
+            mensajeExito = "";
         }
         catch (Exception ex)
         {

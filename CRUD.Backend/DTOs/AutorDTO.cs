@@ -2,6 +2,7 @@
 
 namespace CRUD.Backend.DTOs
 {
+    // DTO para autor
     public class AutorDTO
     {
         [Required(ErrorMessage = "El nombre completo es obligatorio")]

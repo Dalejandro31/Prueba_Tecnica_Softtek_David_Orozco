@@ -41,9 +41,15 @@ else
     </EditForm>
 }
 
-@if (!string.IsNullOrEmpty(errorMessage))
+
+@if (!string.IsNullOrEmpty(mensajError))
 {
-    <div class="alert alert-danger mt-3">@errorMessage</div>
+    <div class="alert alert-danger mt-3">@mensajError</div>
+}
+
+@if (!string.IsNullOrEmpty(mensajeExito))
+{
+    <div class="alert alert-success mt-3">@mensajeExito</div>
 }
 
 @code {
@@ -51,18 +57,19 @@ else
     public int AutorId { get; set; }
 
     private Autor autor = new Autor();
-    private string errorMessage;
+    private string mensajError;
+
+    private string mensajeExito;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            // Obtener el autor por ID utilizando el servicio
             autor = await AutorService.ObtenerAutorPorIdAsync(AutorId);
         }
         catch (Exception ex)
         {
-            errorMessage = ex.Message;
+            mensajError = ex.Message;
         }
     }
 
@@ -70,14 +77,18 @@ else
     {
         try
         {
-            errorMessage = "";
-            // Llamada al servicio para modificar el autor
-            await AutorService.ModificarAutorAsync(AutorId, autor);
+            mensajError = "";
+            mensajeExito = "";
+            var respuesta = await AutorService.ModificarAutorAsync(AutorId, autor);
+            mensajeExito = "Autor Editado correctamente";
+            StateHasChanged();
+            await Task.Delay(3000);
             NavigationManager.NavigateTo("/autores");
+            
         }
         catch (Exception ex)
         {
-            errorMessage = ex.Message;
+            mensajError = ex.Message;
         }
     }
 
