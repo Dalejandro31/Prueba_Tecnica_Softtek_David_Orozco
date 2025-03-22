@@ -1,0 +1,71 @@
+﻿@page "/libros/crear"
+@inject ILibroService LibroService
+@inject NavigationManager NavigationManager
+@using CRUD.Frontend.DTOs
+
+<h3 class="mb-4">Crear Libro</h3>
+
+<EditForm Model="@nuevoLibro" OnValidSubmit="@CrearLibro" class="row g-3">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="col-md-6">
+        <label class="form-label">Título <span class="text-danger">*</span></label>
+        <InputText @bind-Value="nuevoLibro.Titulo" class="form-control" />
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Año de Publicación <span class="text-danger">*</span></label>
+        <InputDate @bind-Value="nuevoLibro.AnioDeAnioPublicacion" class="form-control" />
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Género <span class="text-danger">*</span></label>
+        <InputText @bind-Value="nuevoLibro.Genero" class="form-control" />
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Número de Páginas <span class="text-danger">*</span></label>
+        <InputNumber @bind-Value="nuevoLibro.NumeroPaginas" class="form-control" />
+    </div>
+
+    <div class="col-12">
+        <label class="form-label">Nombre del Autor <span class="text-danger">*</span></label>
+        <InputText @bind-Value="nuevoLibro.NombreAutor" class="form-control" />
+    </div>
+
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <button type="button" class="btn btn-secondary" @onclick="@Regresar">Cancelar</button>
+    </div>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger mt-3">@mensajeError</div>
+}
+
+@code {
+
+    private LibroCrearDto nuevoLibro = new LibroCrearDto();
+    private string mensajeError;
+
+    private async Task CrearLibro()
+    {
+        try
+        {
+            mensajeError = "";
+            await LibroService.CrearLibroAsync(nuevoLibro);
+            NavigationManager.NavigateTo("/libros");
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+
+    private void Regresar()
+    {
+        NavigationManager.NavigateTo("/libros");
+    }
+}

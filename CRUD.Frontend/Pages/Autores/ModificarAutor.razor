@@ -1,0 +1,88 @@
+﻿@page "/autores/editar/{AutorId:int}"
+@inject IAutorService AutorService
+@inject NavigationManager NavigationManager
+
+<h3 class="mb-4">Editar Autor</h3>
+
+@if (autor == null)
+{
+    <div class="alert alert-info">Cargando...</div>
+}
+else
+{
+    <EditForm Model="@autor" OnValidSubmit="@ModificarAutorAsync" class="row g-3">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="col-md-6">
+            <label class="form-label">Nombre Completo</label>
+            <InputText @bind-Value="autor.NombreCompleto" class="form-control" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Fecha de Nacimiento</label>
+            <InputDate @bind-Value="autor.FechaNacimiento" class="form-control" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Ciudad de Procedencia</label>
+            <InputText @bind-Value="autor.CiudadProcedencia" class="form-control" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Correo Electrónico</label>
+            <InputText @bind-Value="autor.CorreoElectronico" class="form-control" />
+        </div>
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+        </div>
+    </EditForm>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger mt-3">@errorMessage</div>
+}
+
+@code {
+    [Parameter]
+    public int AutorId { get; set; }
+
+    private Autor autor = new Autor();
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Obtener el autor por ID utilizando el servicio
+            autor = await AutorService.ObtenerAutorPorIdAsync(AutorId);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    private async Task ModificarAutorAsync()
+    {
+        try
+        {
+            errorMessage = "";
+            // Llamada al servicio para modificar el autor
+            await AutorService.ModificarAutorAsync(AutorId, autor);
+            NavigationManager.NavigateTo("/autores");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    private void Cancelar()
+    {
+        NavigationManager.NavigateTo("/autores");
+    }
+}

@@ -1,0 +1,52 @@
+﻿@page "/autores/crear"
+@inject NavigationManager NavigationManager
+@inject IAutorService AutorService
+
+<h3 class="mb-4">Crear Autor</h3>
+
+<EditForm Model="@nuevoAutor" OnValidSubmit="@CrearAutor" class="row g-3">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="col-md-6">
+        <label for="nombreCompleto" class="form-label">Nombre Completo:</label>
+        <InputText @bind-Value="nuevoAutor.NombreCompleto" id="nombreCompleto" class="form-control" />
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Fecha de Nacimiento:</label>
+        <InputDate @bind-Value="nuevoAutor.FechaNacimiento" class="form-control" />
+    </div>
+
+    
+
+    <div class="col-md-6">
+        <label for="ciudadProcedencia" class="form-label">Ciudad de Procedencia:</label>
+        <InputText @bind-Value="nuevoAutor.CiudadProcedencia" id="ciudadProcedencia" class="form-control" />
+    </div>
+
+    <div class="col-md-6">
+        <label for="correoElectronico" class="form-label">Correo Electrónico:</label>
+        <InputText @bind-Value="nuevoAutor.CorreoElectronico" id="correoElectronico" class="form-control" />
+    </div>
+
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <button type="button" class="btn btn-secondary" @onclick="@Regresar">Cancelar</button>
+    </div>
+</EditForm>
+
+@code {
+    private Autor nuevoAutor = new Autor();
+
+    private async Task CrearAutor()
+    {
+        await AutorService.CrearAutorAsync(nuevoAutor);
+        NavigationManager.NavigateTo("/autores");
+    }
+
+    private void Regresar()
+    {
+        NavigationManager.NavigateTo("/autores");
+    }
+}

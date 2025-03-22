@@ -1,0 +1,106 @@
+﻿@page "/autores"
+@inject IAutorService AutorService
+@inject NavigationManager NavigationManager
+
+<h3 class="mb-4">Lista de Autores</h3>
+
+@if (autores == null)
+{
+    <div class="alert alert-info">Cargando...</div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        @foreach (var autor in autores)
+        {
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@autor.NombreCompleto</h5>
+                        <p class="card-text">@autor.CorreoElectronico</p>
+                        <button class="btn btn-link p-0" @onclick="() => ToggleMostrarLibros(autor.AutorId)">
+                            @(autoresConLibrosVisibles.Contains(autor.AutorId) ? "Ocultar Libros" : "Mostrar Libros")
+                        </button>
+                        <button class="btn btn-warning me-2" @onclick='() => NavigationManager.NavigateTo($"/autores/editar/{autor.AutorId}")'>Editar</button>
+                        <button class="btn btn-danger" @onclick="() => EliminarAutor(autor.AutorId)">Eliminar</button>
+
+                        @if (autoresConLibrosVisibles.Contains(autor.AutorId))
+                        {
+                            <ul class="list-group list-group-flush mt-2">
+                                @if (autor.Libros != null && autor.Libros.Any())
+                                {
+                                    @foreach (var libro in autor.Libros)
+                                    {
+                                        <li class="list-group-item">
+                                            <strong>@libro.Titulo</strong> - @libro.Genero
+                                        </li>
+                                    }
+                                }
+                                else
+                                {
+                                    <li class="list-group-item">No tiene libros registrados.</li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger mt-3">@mensajeError</div>
+}
+
+@code {
+    private IEnumerable<Autor>? autores;
+    private HashSet<int> autoresConLibrosVisibles = new HashSet<int>();
+    private string mensajeError;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarAutores();
+    }
+
+    private async Task CargarAutores()
+    {
+        try
+        {
+            mensajeError = "";
+            autores = await AutorService.ObtenerTodosAsync();
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+
+    private void ToggleMostrarLibros(int autorId)
+    {
+        if (autoresConLibrosVisibles.Contains(autorId))
+        {
+            autoresConLibrosVisibles.Remove(autorId);
+        }
+        else
+        {
+            autoresConLibrosVisibles.Add(autorId);
+        }
+    }
+
+    private async Task EliminarAutor(int autorId)
+    {
+        try
+        {
+            mensajeError = "";
+            await AutorService.EliminarAutorAsync(autorId);
+            // Recargar la lista tras la eliminación
+            await CargarAutores();
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+}

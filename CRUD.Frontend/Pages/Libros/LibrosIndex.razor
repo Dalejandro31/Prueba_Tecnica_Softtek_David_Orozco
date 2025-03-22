@@ -1,0 +1,74 @@
+﻿@page "/libros"
+@inject ILibroService LibroService
+@inject NavigationManager NavigationManager
+
+<h3 class="mb-4">Lista de Libros</h3>
+
+@if (libros == null)
+{
+    <div class="alert alert-info">Cargando...</div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        @foreach (var libro in libros)
+        {
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@libro.Titulo</h5>
+                        <p class="card-text">
+                            <strong>Género:</strong> @libro.Genero <br />
+                            <strong>Autor:</strong> @libro.Autor?.NombreCompleto
+                        </p>
+                        <button class="btn btn-warning me-2" @onclick='() => NavigationManager.NavigateTo($"/libros/editar/{libro.LibroId}")'>Editar</button>
+                        <button class="btn btn-danger" @onclick="() => EliminarLibro(libro.LibroId)">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger mt-3">@mensajeError</div>
+}
+
+@code {
+    private IEnumerable<Libro>? libros;
+    private string mensajeError;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarLibros();
+    }
+
+    private async Task CargarLibros()
+    {
+        try
+        {
+            mensajeError = "";
+            libros = await LibroService.ObtenerTodosAsync();
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+
+    private async Task EliminarLibro(int libroId)
+    {
+        try
+        {
+            mensajeError = "";
+            await LibroService.EliminarLibroAsync(libroId);
+            // Recargar la lista tras la eliminación
+            await CargarLibros();
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+}

@@ -1,0 +1,105 @@
+﻿@page "/libros/editar/{LibroId:int}"
+@inject NavigationManager NavigationManager
+@inject ILibroService LibroService
+@using CRUD.Frontend.DTOs
+
+
+<h3 class="mb-4">Editar Libro</h3>
+
+@if (libro == null)
+{
+    <div class="alert alert-info">Cargando...</div>
+}
+else
+{
+    <EditForm Model="@libro" OnValidSubmit="@ModificarLibro" class="row g-3">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="col-md-6">
+            <label class="form-label">Título</label>
+            <InputText @bind-Value="libro.Titulo" class="form-control" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Año de Publicación</label>
+            <InputDate @bind-Value="libro.AnioDeAnioPublicacion" class="form-control" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Género</label>
+            <InputText @bind-Value="libro.Genero" class="form-control" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Número de Páginas</label>
+            <InputNumber @bind-Value="libro.NumeroPaginas" class="form-control" />
+        </div>
+
+        <div class="col-12">
+            <label class="form-label">Nombre del Autor</label>
+            <InputText @bind-Value="libro.NombreAutor" class="form-control" />
+        </div>
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            <button type="button" class="btn btn-secondary" @onclick="Regresar">Cancelar</button>
+        </div>
+    </EditForm>
+}
+
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger mt-3">@mensajeError</div>
+}
+
+@code {
+    [Parameter]
+    public int LibroId { get; set; }
+
+    // Utilizaremos el mismo DTO que en la creación.
+    private LibroCrearDto libro = new LibroCrearDto();
+    private string mensajeError;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Se obtiene el libro a través del endpoint GET por ID
+            var libroObtenido = await LibroService.ObtenerLibroPorIdAsync(LibroId);
+            // Mapear las propiedades al DTO (puedes crear un DTO específico para edición si lo prefieres)
+            libro = new LibroCrearDto
+                {
+                    Titulo = libroObtenido.Titulo,
+                    AnioDeAnioPublicacion = libroObtenido.AnioDeAnioPublicacion,
+                    Genero = libroObtenido.Genero,
+                    NumeroPaginas = libroObtenido.NumeroPaginas,
+                    // Se asume que el nombre del autor viene de la propiedad Autor
+                    NombreAutor = libroObtenido.Autor?.NombreCompleto
+                };
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+
+    private async Task ModificarLibro()
+    {
+        try
+        {
+            mensajeError = "";
+            await LibroService.ModificarLibroAsync(LibroId, libro);
+            NavigationManager.NavigateTo("/libros");
+        }
+        catch (Exception ex)
+        {
+            mensajeError = ex.Message;
+        }
+    }
+
+    private void Regresar()
+    {
+        NavigationManager.NavigateTo("/libros");
+    }
+}
