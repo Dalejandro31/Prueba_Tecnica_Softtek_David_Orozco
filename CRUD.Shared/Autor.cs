@@ -1,31 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
-namespace CRUD.Shared
+namespace CRUD.Shared;
+
+public partial class Autor
 {
-    public class Autor
-    {
-        public int AutorId { get; set; }
+    public int IdAutor { get; set; }
 
-        [Required(ErrorMessage = "El nombre completo es obligatorio")]
-        public string NombreCompleto { get; set; }
+    public string Nombre { get; set; } = null!;
 
-        [Required(ErrorMessage = "La fecha de nacimiento es obligatoria")]
-        public DateTime FechaNacimiento { get; set; }
+    public string Apellido { get; set; } = null!;
 
-        [Required(ErrorMessage = "La ciudad de procedencia es obligatoria")]
-        public string CiudadProcedencia { get; set; }
+    public DateOnly FechaNacimiento { get; set; }
 
-        [Required(ErrorMessage = "El correo electronico es obligatorio")]
-        [EmailAddress(ErrorMessage = "Correo Electronico no valido")]
-        public string CorreoElectronico { get; set; }
+    public string? Correo { get; set; }
 
-       
-        public ICollection<Libro> Libros { get; set; }
-    }
+    public int IdCiudadProcedencia { get; set; }
+
+    public virtual CiudadProcedencium IdCiudadProcedenciaNavigation { get; set; } = null!;
+
+    public virtual ICollection<Libro> Libros { get; set; } = new List<Libro>();
 }

@@ -2,9 +2,12 @@ using System;
 using System.Text.Json.Serialization;
 using CRUD.Backend.Data;
 using CRUD.Backend.Interfaces;
+using CRUD.Backend.InterfacesRepository;
+using CRUD.Backend.Repository;
 using CRUD.Backend.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +26,9 @@ builder.Services.AddDbContext<DataContext>(options =>
 // Inyecta las implementaciones de servicios usando el patrón Scoped (una instancia por request HTTP)
 builder.Services.AddScoped<IAutorService, AutorService>();
 builder.Services.AddScoped<ILibroService, LibroService>();
+builder.Services.AddScoped<IAutorRepository, AutorRepository>();
+builder.Services.AddScoped<ILibroRepository, LibroRepository>();
+
 
 // Configura los controladores para evitar referencias cíclicas al serializar objetos
 builder.Services.AddControllers()

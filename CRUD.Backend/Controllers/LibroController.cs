@@ -101,5 +101,14 @@ namespace CRUD.Backend.Controllers
             }
         }
 
+        //obtener el sp
+        [HttpGet("detalle")]
+        public async Task<ActionResult<IEnumerable<LibroConDetalleDTO>>> GetLibrosConDetalle()
+        {
+            var result = await _libroService.ObtenerLibrosConDetalleSPAsync();
+            return Ok(result);
+        }
+
+
     }
 }

@@ -11,6 +11,7 @@ namespace CRUD.Backend.Interfaces
         Task<Libro> CrearLibroAsync(LibroDTO libroDto);
         Task<Libro> ModificarLibroAsync(int id, LibroDTO libroDto);
         Task<Libro> EliminarLibroAsync(int id);
+        Task<IEnumerable<LibroConDetalleDTO>> ObtenerLibrosConDetalleSPAsync();
 
 
     }
